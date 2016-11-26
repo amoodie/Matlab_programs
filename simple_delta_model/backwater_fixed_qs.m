@@ -70,8 +70,8 @@ function [qs] = get_transport(U, Cf, d50, Beta)
     % 1000 = rho = fluid density
     % 1.65 = R = submerged specific gravity
     % 9.81 = g = gravitation acceleration
-    u_a = sqrt(Cf .* (U.^2));
-    tau = 1000 .* (u_a.^2); 
+    ustar = sqrt(Cf .* (U.^2));
+    tau = 1000 .* (ustar.^2); 
     
     qs = Beta .* sqrt(1.65 * 9.81 * d50) * d50 * (0.05 / Cf) .* (tau ./ (1000 * 1.65 * 9.81 * d50)) .^ 2.5; 
 end
