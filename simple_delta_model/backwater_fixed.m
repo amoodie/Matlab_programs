@@ -11,7 +11,7 @@ function backwater_fixed
     Cf = 0.0047; % friction coeff
     
     B0 = 1100; % channel width
-    Qw = 35000; % water discharge
+    Qw = 10000; % water discharge
     qw = Qw / B0; % width averaged water discharge
     
     [S] = get_slope(eta, nx, dx); % bed slope at each node
@@ -46,22 +46,24 @@ function [H] = get_backwater_fixed(eta, S, H0, Cf, qw, nx, dx)
     H(nx+1) = abs(H0 - eta(nx+1)); % water depth at downstream boundary
     for i = nx:-1:1
         % predictor step: computation of a first estimation of the water depth Hp
-        Frp = get_froude(qw, H(i+1)); % calculate froude from conditions at i+1
-        dHdxp = get_dHdx(S(i+1), Cf, Frp); % use desired relation for dHdx (width fixed for now)
+        Frsqp = get_froudesq(qw, H(i+1)); % calculate froude-squared from conditions at i+1
+        dHdxp = get_dHdx(S(i+1), Cf, Frsqp); % use desired relation for dHdx (width fixed for now)
         Hp = H(i+1) - dHdxp * dx; % solve for H prediction
         % corrector step: computation of H
-        Frc = get_froude(qw, Hp); % calculate froude at i with prediction depth
-        dHdxc = get_dHdx(S(i), Cf, Frc); % doaa
-        % convolution of prediction and correction, central diffs
+        Frsqc = get_froudesq(qw, Hp); % calculate froude-squared at i with prediction depth
+        dHdxc = get_dHdx(S(i), Cf, Frsqc); % doaa
+        % convolution of prediction and correction, trapezoidal rule
         H(i) = H(i+1) - ( (0.5) * (dHdxp + dHdxc) * dx );
     end
 end
 
-function [Fr] = get_froude(qw, H)
+function [Frsq] = get_froudesq(qw, H)
+    % calculate froude squared
     g = 9.81; % gravitational acceleration constant
-    Fr = ( qw^2 / (g * H^3) );
+    Frsq = ( qw^2 / (g * H^3) );
 end
 
-function [dHdx] = get_dHdx(S_loc, Cf, Fr)
-    dHdx = (S_loc - Cf * (Fr^2)) / (1 - (Fr^2));
+function [dHdx] = get_dHdx(S_loc, Cf, Frsq)
+    % calculate change in height over space by backwater eqn
+    dHdx = (S_loc - Cf * (Frsq)) / (1 - (Frsq));
 end

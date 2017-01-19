@@ -1,4 +1,4 @@
-function backwater_fixed_qs
+function backwater_fixed_qs_exner
     L = 1200e3; % length of domain (m)
     nx = 400; % number of nodes (+1)
     dx = L/nx; % length of cells (m)
@@ -17,53 +17,51 @@ function backwater_fixed_qs
     d50 = 300e-6; % median grain diameter;
     Beta = 0.64; % adjustment factor, Nittrouer and Viparelli, 2014
     
-    [S] = get_slope(eta, nx, dx); % bed slope at each node
-
-    [H] = get_backwater_fixed(eta, S, H0, Cf, qw, nx, dx); % flow depth
-    U = Qw ./ (H .* B0); % velocity
-    [qs] = get_transport(U, Cf, d50, Beta); % sediment transport vector
+    phi = 0.6; % bed porosity
+    au = 1; % winding coefficient
+    If = 0.2; % intermittency factor, i.e., fraction of flooding Qw per year
+    
+    T = 500; % yrs
+    timestep = 0.1; % timestep, fraction of years
+    t = T/timestep; % number of timesteps
+    dtsec =  31557600 * timestep; % seconds in a timestep
+    
+    etai = eta;
+    
+    for i = 1:t
+        [S] = get_slope(eta, nx, dx); % bed slope at each node
+        [H] = get_backwater_fixed(eta, S, H0, Cf, qw, nx, dx); % flow depth
+        U = Qw ./ (H .* B0); % velocity
+        [qs] = get_transport(U, Cf, d50, Beta);
+        qsu = qs(1); % fixed equilibrium at upstream
+        [eta] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx);
+    end
+    
+    CFL = max(U)*(dtsec)/dx;
     
     makeplot = true; % set to false for no plotting
     if makeplot
         figure()
-        subplot(3, 1, [1 2])
             cla; hold on;
+            etaiLine = plot(x/1000, etai, 'k-', 'LineWidth', 0.8);
             etaLine = plot(x/1000, eta, 'k-', 'LineWidth', 1.2);
             Hline = plot(x/1000, eta + H, 'b-', 'LineWidth', 1.2);
             ylabel('elevation (m)')
             legend([etaLine, Hline], {'channel bed', 'water surface'})
             box on
             set(gca, 'FontSize', 10, 'LineWidth', 1.5)
-        subplot(3, 1, 3)
-            cla; hold on;
-            [yyAx, Uline, qsLine] = plotyy(x/1000, U,  x/1000, qs);
-            set(Uline, 'Color', [1 0 0], 'LineWidth', 1.2)
-            set(qsLine, 'Color', [0.2 0.5 0.5], 'LineWidth', 1.2)
-            yyAx(1).YColor = [1 0 0];
-            yyAx(2).YColor = [0.2 0.5 0.5];
-            yyAx(2).LineWidth = 2;
-            xlabel('distance downstream (km)')
-            ylabel(yyAx(1), 'velocity (m/s)')
-            ylabel(yyAx(2), 'transport (m^2/s)')
-            legend([etaLine, Hline], {'channel bed', 'water surface'})
-            box on
-            set(gca, 'FontSize', 10, 'LineWidth', 1.5)
+
     end
     
-    % additional calculations and plot for blog post
-    Us = 0.1:0.1:3; % range of U values to evaluate
-    qss1 = get_transport(Us, Cf, d50, 1); % evaluate with Beta = 1
-    qss2 = get_transport(Us, Cf, d50, Beta); % evaluate with Beta = 0.64
-        figure()
-        cla; hold on;
-        Beta1 = plot(Us, qss1, 'k-', 'LineWidth', 1.2);
-        Beta2 = plot(Us, qss2, 'k--', 'LineWidth', 1.2);
-        xlabel('velocity (m/s)')
-        ylabel('transport (m^2/s)')
-        legend([Beta1, Beta2], {'\beta = 1.0', '\beta = 0.64'}, 'Location', 'NorthWest')
-        box on
-        set(gca, 'FontSize', 10, 'LineWidth', 1.5)
-    
+end
+
+function [eta] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx)
+    eta0 = eta;
+    dqsdx = NaN(1, nx+1);% preallocate
+    dqsdx(nx+1) = (qs(nx+1) - qs(nx)) / dx; % gradient at downstream boundary, downwind always
+    dqsdx(1) = au*(qs(1)-qsu)/dx + (1-au)*(qs(2)-qs(1))/dx; % gradient at upstream boundary (qt at the ghost node is qt_u)
+    dqsdx(2:nx) = au*(qs(2:nx)-qs(1:nx-1))/dx + (1-au)*(qs(3:nx+1)-qs(2:nx))/dx; % use winding coefficient in central portion
+    eta = eta0 - ((1/(1-phi)) .* dqsdx .* (If * dtsec));
 end
 
 function [qs] = get_transport(U, Cf, d50, Beta)
