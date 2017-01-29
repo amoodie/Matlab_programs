@@ -1,4 +1,4 @@
-function backwater_fixed_qs_exner
+function backwater_fixed_qs_exner_time
     L = 1200e3; % length of domain (m)
     nx = 400; % number of nodes (+1)
     dx = L/nx; % length of cells (m)
@@ -19,20 +19,37 @@ function backwater_fixed_qs_exner
     
     au = 1; % winding coefficient
     
-    [S] = get_slope(eta, nx, dx); % bed slope at each node
-    [H] = get_backwater_fixed(eta, S, H0, Cf, qw, nx, dx); % flow depth
-    U = Qw ./ (H .* B0); % velocity
-    [qs] = get_transport(U, Cf, d50, Beta);
-    qsu = qs(1); % fixed equilibrium at upstream
-    [dqsdx] = get_dqsdx(qs, qsu, nx, dx, au);
-   
+    phi = 0.6; % bed porosity
+    If = 0.2; % intermittency factor, i.e., fraction of flooding Qw per year
+    
+    T = 500; % yrs
+    timestep = 0.1; % timestep, fraction of years
+    t = T/timestep; % number of timesteps
+    dtsec =  31557600 * timestep; % seconds in a timestep
+    
+    etai = eta;
+    
+    for i = 1:t
+        [S] = get_slope(eta, nx, dx); % bed slope at each node
+        [H] = get_backwater_fixed(eta, S, H0, Cf, qw, nx, dx); % flow depth
+        U = Qw ./ (H .* B0); % velocity
+        [qs] = get_transport(U, Cf, d50, Beta);
+        qsu = qs(1); % fixed equilibrium at upstream
+        [eta] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx);
+    end
+    
+    CFL = max(U)*(dtsec)/dx;
+    
     makeplot = true; % set to false for no plotting
     if makeplot
         figure()
             cla; hold on;
-            etaiLine = plot(x/1000, dqsdx, 'k-', 'LineWidth', 1.2);
+            etaiLine = plot(x/1000, etai, 'k-', 'LineWidth', 0.8);
+            etaLine = plot(x/1000, eta, 'k-', 'LineWidth', 1.2);
+            Hline = plot(x/1000, eta + H, 'b-', 'LineWidth', 1.2);
             xlabel('distance downstream (km)')
-            ylabel('\partial q_s / \partial x')
+            ylabel('elevation (m)')
+            legend([etaLine, Hline], {'channel bed', 'water surface'})
             box on
             set(gca, 'FontSize', 10, 'LineWidth', 1.5)
 
@@ -40,14 +57,7 @@ function backwater_fixed_qs_exner
     
 end
 
-function [dqsdx] = get_dqsdx(qs, qsu, nx, dx, au)
-    dqsdx = NaN(1, nx+1);% preallocate
-    dqsdx(nx+1) = (qs(nx+1) - qs(nx)) / dx; % gradient at downstream boundary, downwind always
-    dqsdx(1) = au*(qs(1)-qsu)/dx + (1-au)*(qs(2)-qs(1))/dx; % gradient at upstream boundary (qt at the ghost node is qt_u)
-    dqsdx(2:nx) = au*(qs(2:nx)-qs(1:nx-1))/dx + (1-au)*(qs(3:nx+1)-qs(2:nx))/dx; % use winding coefficient in central portion
-end
-
-function [eta, dqsdx] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx)
+function [eta] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx)
     eta0 = eta;
     dqsdx = NaN(1, nx+1);% preallocate
     dqsdx(nx+1) = (qs(nx+1) - qs(nx)) / dx; % gradient at downstream boundary, downwind always
