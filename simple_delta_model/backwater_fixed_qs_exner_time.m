@@ -35,7 +35,8 @@ function backwater_fixed_qs_exner_time
         U = Qw ./ (H .* B0); % velocity
         [qs] = get_transport(U, Cf, d50, Beta);
         qsu = qs(1); % fixed equilibrium at upstream
-        [eta] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx);
+        [dqsdx] = get_dqsdx(qs, qsu, nx, dx, au);
+        [eta] = update_eta(eta, dqsdx, phi, If, dtsec);
     end
     
     CFL = max(U)*(dtsec)/dx;
@@ -57,14 +58,18 @@ function backwater_fixed_qs_exner_time
     
 end
 
-function [eta] = update_eta(eta, qs, qsu, phi, au, If, dtsec, nx, dx)
-    eta0 = eta;
+function [dqsdx] = get_dqsdx(qs, qsu, nx, dx, au)
     dqsdx = NaN(1, nx+1);% preallocate
     dqsdx(nx+1) = (qs(nx+1) - qs(nx)) / dx; % gradient at downstream boundary, downwind always
     dqsdx(1) = au*(qs(1)-qsu)/dx + (1-au)*(qs(2)-qs(1))/dx; % gradient at upstream boundary (qt at the ghost node is qt_u)
     dqsdx(2:nx) = au*(qs(2:nx)-qs(1:nx-1))/dx + (1-au)*(qs(3:nx+1)-qs(2:nx))/dx; % use winding coefficient in central portion
+end
+
+function [eta] = update_eta(eta, dqsdx, phi, If, dtsec)
+    eta0 = eta;
     eta = eta0 - ((1/(1-phi)) .* dqsdx .* (If * dtsec));
 end
+
 
 function [qs] = get_transport(U, Cf, d50, Beta)
     % return sediment transport at capacity per unit width
