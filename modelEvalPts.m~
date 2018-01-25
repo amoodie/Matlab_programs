@@ -24,9 +24,8 @@ function [xpts] = modelEvalPts(xData, varargin)
             numIdx = find(numchk);  
         end
     else
-        spacingIdx = [];
-        numIdx = [];
-%         error('????')
+        % need use defaults?
+        error('????')
     end
     
     % apply varargin or defaults
@@ -49,14 +48,16 @@ function [xpts] = modelEvalPts(xData, varargin)
         error('input number is not an integer')
     end
 
-    % determine computation for smart?
+    % determine computation for smart
     
     %% compute    
     switch spacing
         case 'linear'
-            xpts = linspace(min(xData), max(xData), num);
+            xpts = linspace(min(xData), max(xData), 20);
         case 'log'
-            xpts = logspace(min(log10(xData)), max(log10(xData)), num);
+            xpts = logspace(min(log10(xData)), max(log10(xData)), 20);
+        case 'smart'
+            %WIP, make default option once working...?
     end
     
 
