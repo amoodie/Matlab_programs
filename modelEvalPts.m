@@ -7,7 +7,7 @@ function [xpts] = modelEvalPts(xData, varargin)
 %
 %   [xpts] = modelEvalPts(xData, ...) offers the option to input additional
 %   arguments to specify both/either the spacing method and/or the number
-%   of points. Spacing options are 'linear' or 'log' or 'smart' spacing of
+%   of points. Spacing options are 'linear' or 'log' spacing of
 %   points; default is linear. Number is any integer > 0.
 
     %% parse out inputs
@@ -29,7 +29,7 @@ function [xpts] = modelEvalPts(xData, varargin)
 %         error('????')
     end
     
-    % apply varargin or defaults
+    %% apply varargin or defaults
     if isempty(spacingIdx)
         spacing = 'linear'; % default
     else
@@ -41,7 +41,7 @@ function [xpts] = modelEvalPts(xData, varargin)
         num = varargin{numIdx};
     end
     
-    % final sanitize
+    %% final sanitize
     if ~( ismember(spacing, {'linear', 'log', 'smart'}) ) % sanitize spacing
         error('input spacing argument is not a valid option');
     end
@@ -49,7 +49,7 @@ function [xpts] = modelEvalPts(xData, varargin)
         error('input number is not an integer')
     end
 
-    % determine computation for smart?
+    % determine computation for smart spacing choice??
     
     %% compute    
     switch spacing
