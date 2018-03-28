@@ -44,7 +44,7 @@ function [ws, wa] = get_DSV(D, CSF, Pow, varargin)
         error('%d inputs after Pow \ntoo many input arguments', numel(varargin))
     end
 
-    if CSF <= 0.15;
+    if CSF <= 0.15
         error('solution invalid for CSF <= 0.15');
     end
     wa = NaN(size(D));
@@ -52,11 +52,11 @@ function [ws, wa] = get_DSV(D, CSF, Pow, varargin)
     
     for d = 1:length(D)
         Da = get_Da(D(d), con);
-        if Da <= 0.05;
+        if Da <= 0.05
             wa(d) = 1.71e-4 * (Da^2); % use Stokes for Da <= 0.05, from Dietrich, 1982 paper
-        elseif Da > 0.05 && Da <= 5e9;
+        elseif Da > 0.05 && Da <= 5e9
             wa(d) = DSV_fit(Da, CSF, Pow); % use Dietrich for Da > 0.05
-        elseif Da > 5e9;
+        elseif Da > 5e9
             warning('%f \nsolution invalid for Da > 5e9 \nreturning NaN', Da)
             wa(d) = NaN;
             % wa = NaN; % no consideration to turbulence so invalid above this size
