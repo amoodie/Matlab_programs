@@ -1,5 +1,5 @@
 function [formatStr] = formatRegression(betaMat, predCell)
-%formatRegression formats a linearized regression matrix to a power law regression for multivariate regression
+%formatRegression formats a linearized multivariate regression matrix to a power law regression string
 %   [formatStr] = formatRegression(betaMat, predCell) where betaMat is the 
 %   matrix of estimates returned from the regression and predCell is a 1xn 
 %   cell array of the variables in the regression, as they should be printed
