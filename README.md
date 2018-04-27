@@ -31,6 +31,8 @@ For example, `formatRegression(beta, {'u_*/w_s', 'Re_p', '1/\alpha'})` returns t
 
 ### get_DSV.m
 
+`get_DSV` is the Dietrich settling velocity (Dietrich, 1982) in m/s for grain size. Can handle arbitrary shaped matrix and a Corey shape factor, Power's index and set of physical constants (see `load_conset.m`. 
+
 
 ### get_criticalstress.m
 
