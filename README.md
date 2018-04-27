@@ -1,4 +1,4 @@
-# Matlab repository
+# Matlab and R functions and models repository
 
 This repository contains tools I have written that I frequently use in modeling or calculations. 
 
@@ -18,6 +18,8 @@ A summary of _some_ of the functions in here is included. See the file for more 
 
 ### dist2bulk.m
 
+`dist2bulk` calculates the bulk value of a sample given per-class values and a grain size distribution. Output is numeric.
+For example, `[bulk] = dist2bulk(dist, val)`
 
 ### formatRegression.m
 

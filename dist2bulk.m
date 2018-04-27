@@ -1,7 +1,7 @@
 function [bulk] = dist2bulk(dist, val)
 %dist2bulk per-class in dist weighted avg of val
 %   
-%   [dist2bulk] = dist2bulk(dist, val) calculates per-class in dist weighted average 
+%   [bulk] = dist2bulk(dist, val) calculates per-class in dist weighted average 
 %   of an input value val, returning the bulk sample value. Output is numeric.
 % 
 %   Input constraints: wip
