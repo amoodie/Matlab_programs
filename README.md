@@ -9,43 +9,43 @@ It also contains a few simple self contained models I have developed.
 A summary of _some_ of the functions in here is included. See the file for more documentation.
 
 
-#### categorical2jitterMat.m
+### categorical2jitterMat.m
 
-__categorical2jitterMat__ reshapes data for parallel boxplot-jitterplot.
+`categorical2jitterMat` reshapes data for parallel boxplot-jitterplot.
 
 ![jitterexample](./private/jitterplot.png "example of parallel jitter and boxplot") 
 
 
-#### dist2bulk.m
+### dist2bulk.m
 
 
-#### formatRegression.m
+### formatRegression.m
 
-__formatRegression__ formats a linearized multivariate regression matrix to a power law regression string.
+`formatRegression` formats a linearized multivariate regression matrix to a power law regression string.
 For example, `formatRegression(beta, {'u_*/w_s', 'Re_p', '1/\alpha'})` returns the string to be formatted with `text` as
 
 ![jitterexample](./private/regression.png "regression example")
 
 
-#### get_DSV.m
+### get_DSV.m
 
 
-#### get_criticalstress.m
+### get_criticalstress.m
 
 
-#### inspire.m
+### inspire.m
 
 
-#### load_colorSet.m
+### load_colorSet.m
 
 
-#### load_conset.m
+### load_conset.m
 
 
-#### modelEvalPts.m
+### modelEvalPts.m
 
 
-#### sprintsci.m
+### sprintsci.m
 
-__sprintsci__ prints number in fully formatted scientific notation. 
+sprintsci` prints number in fully formatted scientific notation. 
 E.g., `sprintsci(0.0483244)` returns a string `'4.832\times10^{-2}'`.
