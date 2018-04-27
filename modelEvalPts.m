@@ -1,5 +1,6 @@
 function [xpts] = modelEvalPts(xData, varargin)
 % modelEvalPts calculates evaluation x points xpts from range of xData
+% Andrew J. Moodie 2018
 %
 %   [xpts] = modelEvalPts(xData) where xData is the input x-data for
 %   plotting against the model. If xData is a matrix, each column is
