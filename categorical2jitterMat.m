@@ -12,7 +12,7 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
 %
 %   to plot, use:
 %
-%   figure()
+%   figure(); hold on
 %   plot(dataMat, jitterMat, 'ko')
 %   boxplot(dataMat)
 %
@@ -23,7 +23,7 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
         if isnumeric(categRaw{1})
             categRaw = cellfun(@(x) x, categRaw);
         else
-            warning('categRaw is a cell array of type non-numeric. Leaving it alone and attempting to proceed...', 
+            warning('categRaw is a cell array of type non-numeric. Leaving it alone and attempting to proceed...')
         end
     end
 
@@ -51,7 +51,10 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
     end
     
     % the jitter matrix, offset from the category axes
-    jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + randn(size(dataMat))/(length(groupList)*10);
+%     jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + randn(size(dataMat))/(length(groupList)*10);
+    jitter = abs( randn(size(dataMat))/(length(groupList)*10) );
+    offset = 2 / length(groupList);
+    jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + offset + jitter;
     
     % group mat is the group each belongs to
     try
