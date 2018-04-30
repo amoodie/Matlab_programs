@@ -1,7 +1,7 @@
-rawdata = rand(50, 1);
-rawcats = randi(5, 50, 1);
+rawdata = rand(100, 1);
+rawcats = randi(5, 100, 1);
 
-histcounts(rawcats)
+histcounts(rawcats);
 
 [dataMat, jitterMat, groupMat] = categorical2jitterMat(rawdata, rawcats);
 
