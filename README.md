@@ -31,14 +31,19 @@ For example, `formatRegression(beta, {'u_*/w_s', 'Re_p', '1/\alpha'})` returns t
 
 ### get_DSV.m
 
-`get_DSV` is the Dietrich settling velocity (Dietrich, 1982) in m/s for grain size. Can handle arbitrary shaped matrix and a Corey shape factor, Power's index and set of physical constants (see `load_conset.m`. 
+`get_DSV` is the Dietrich settling velocity (Dietrich, 1982) in m/s for grain size. 
+Can handle arbitrary shaped matrix and a Corey shape factor, Power's index and set of physical constants (see `load_conset.m`.
 
 
 ### get_criticalstress.m
 
+`get_criticalstress.m` is the critical stress of grain mobility in Pa.
+The result is calculated by the piecewise function fit by Cao, 2006.
 
 ### inspire.m
 
+`inspire.m` returns a random inspirational quote when the function is called.
+Place it at the beginning of a difficult script to make yourself feel better.
 
 ### load_colorSet.m
 
@@ -51,5 +56,5 @@ For example, `formatRegression(beta, {'u_*/w_s', 'Re_p', '1/\alpha'})` returns t
 
 ### sprintsci.m
 
-sprintsci` prints number in fully formatted scientific notation. 
+`sprintsci` prints number in fully formatted scientific notation. 
 E.g., `sprintsci(0.0483244)` returns a string `'4.832\times10^{-2}'`.
