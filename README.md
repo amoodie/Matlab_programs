@@ -21,6 +21,7 @@ A summary of _some_ of the functions in here is included. See the file for more 
 `dist2bulk` calculates the bulk value of a sample given per-class values and a grain size distribution. Output is numeric.
 For example, `[bulk] = dist2bulk(dist, val)`
 
+
 ### formatRegression.m
 
 `formatRegression` formats a linearized multivariate regression matrix to a power law regression string.
@@ -40,18 +41,40 @@ Can handle arbitrary shaped matrix and a Corey shape factor, Power's index and s
 `get_criticalstress.m` is the critical stress of grain mobility in Pa.
 The result is calculated by the piecewise function fit by Cao, 2006.
 
+
 ### inspire.m
 
 `inspire.m` returns a random inspirational quote when the function is called.
 Place it at the beginning of a difficult script to make yourself feel better.
 
+
 ### load_colorSet.m
+
+`load_colorSet.m` holds preset color suites for plotting.
 
 
 ### load_conset.m
 
+`load_conset.m` holds suites of environmental constants for using in modeling in various environments.
+For example, 
+
+```
+[con] = load_conset('quartz-water')
+
+con = 
+
+  struct with fields:
+
+        g: 9.8100
+    rho_f: 1000
+    rho_s: 2650
+       nu: 1.0040e-06
+        R: 1.6500
+```
+
 
 ### modelEvalPts.m
+
 
 
 ### sprintsci.m
