@@ -75,6 +75,10 @@ con =
 
 ### modelEvalPts.m
 
+`modelEvalPts` calculates evaluation x points xpts from range of xData
+
+`[xpts] = modelEvalPts(xData)` where `xData` is the input x-data for plotting against the model. If `xData` is a matrix, each column is treated as a vector and `xPts` is a matrix of points for each column.
+`[xpts] = modelEvalPts(xData, ...)` offers the option to input additional arguments to specify both/either the spacing method and/or the number of points. Spacing options are `'linear'` or `log'` spacing of points; default is linear. Number is any integer > 0.
 
 
 ### sprintsci.m
