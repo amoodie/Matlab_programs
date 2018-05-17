@@ -48,6 +48,14 @@ The result is calculated by the piecewise function fit by Cao, 2006.
 Place it at the beginning of a difficult script to make yourself feel better.
 
 
+### listing.m
+    
+`listing.m` gets the listing of all _real_ items in a directory. 
+Basically it strips the '.' and '..' folders, with more options.
+Optionally will take `'dirsonly'` or `'filesonly'` or if any other string or cell array of strings is given, it returns only files with those extensions.
+Returns structure of listing information and filename only listing.
+
+
 ### load_colorSet.m
 
 `load_colorSet.m` holds preset color suites for plotting.

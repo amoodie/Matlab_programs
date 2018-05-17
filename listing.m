@@ -28,7 +28,6 @@ function [list_struct, list_names] = listing(directory, varargin)
     varargcell = cellfun(@iscell, varargin);
     if any( varargcell )
         keepfiles(rawlist.isdir) = false; % logical of files only
-    
     end
     
     % if any non-cell argument is dirsonly
@@ -44,10 +43,12 @@ function [list_struct, list_names] = listing(directory, varargin)
     % process down to only files or dirs if desired
     typelist = rawlist( and(keepdirs, keepfiles) );
     
-    
     % process the list down to only the types listed in a cell array if given.
     % also check first if the argument supplied begins with a '.xxx' 
     % then it is assumed to be a file type
+    for t = length(isaformat)
+        
+    end
     
     listingnames = arrayfun(@(x) x.name, rawlist, 'Unif', 0);
     listingshoreline = cellfun(@(x) and(contains(x, '.mat'), contains(x, 'shoreline_')), listingnames);
