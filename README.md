@@ -42,6 +42,11 @@ Can handle arbitrary shaped matrix and a Corey shape factor, Power's index and s
 The result is calculated by the piecewise function fit by Cao, 2006.
 
 
+### GGA2ll.m
+
+`GGA2ll.m` takes a single file with a NMEA GGA string dump and averages all position information to a single location, returned as a 1x3 matrix point with latitude, longitude, elevation (will optionally return the values as separate scalars).
+
+
 ### inspire.m
 
 `inspire.m` returns a random inspirational quote when the function is called.
