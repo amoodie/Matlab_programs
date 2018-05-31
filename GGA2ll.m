@@ -34,9 +34,6 @@ function [point, latmean, lonmean, zmean] = GPGGA2ll(filepath)
     latperidx = strfind(latdecmin{1}, '.');
     lonperidx = strfind(londecmin{1}, '.');
     
-    % find the hemispheres
-    
-    
     % where to start the decimal minutes 
     latstidx = latperidx - 3;
     lonstidx = lonperidx - 3;
@@ -46,8 +43,14 @@ function [point, latmean, lonmean, zmean] = GPGGA2ll(filepath)
     londeg = cellfun(@(x) str2num( x(1:lonstidx) ), londecmin);
     
     % convert to negative if hemisphere dictates
-    if lathemi = 'S'
+    if strcmp(lathemi{1}, 'S')
+        latdeg = -latdeg;
+    end
+    if strcmp(lonhemi{1}, 'W')
+        londeg = -londeg;
+    end
     
+    %
     latdecraw = cellfun(@(x) str2num( x(latstidx+1:end) ), latdecmin);
     londecraw = cellfun(@(x) str2num( x(lonstidx+1:end) ), londecmin);
     
