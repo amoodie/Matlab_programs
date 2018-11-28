@@ -52,18 +52,22 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
     
     % the jitter matrix, offset from the category axes
 %     jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + randn(size(dataMat))/(length(groupList)*10);
-    jitter = abs( randn(size(dataMat))/(length(groupList)*10) );
+    
     
     % if older than version x else
+    % note this is untested for older versions...
     if verLessThan('matlab', '9.5.0')
          % execute code for R2018a or earlier
-         % note this is untested...
+         jitter = abs( randn(size(dataMat))/(length(groupList)*10) );
          offset = 2 / length(groupList);
+         jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + offset + jitter;
     else
         % execute code for R2018b or later
+         jitter = ( randn(size(dataMat))/(length(groupList)*10) );
          offset = 0;
+         jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + offset + jitter;
     end
-    jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + offset + jitter;
+    
     
     % group mat is the group each belongs to
     try
