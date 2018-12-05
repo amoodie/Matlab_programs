@@ -56,7 +56,7 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
     
     % if older than version x else
     % note this is untested for older versions...
-    if verLessThan('matlab', '9.5.0')
+    if verLessThan('matlab', '9.4.0')
          % execute code for R2018a or earlier
          jitter = abs( randn(size(dataMat))/(length(groupList)*10) );
          offset = 2 / length(groupList);
