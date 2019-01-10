@@ -13,8 +13,9 @@ function [c, varargout] = load_colorSet(colSwitch)
             col3 = [0.988,0.71,0.471];
             col4 = [0.447,0.816,0.388];
         case 'grayscale'
-            col1 = [0.7 0.7 0.7];
-            col2 = [0.7 0.7 0.7];
+            col1 = [0.2 0.2 0.2];
+            col2 = [0.5 0.5 0.5];
+            col3 = [0.9 0.9 0.9];
     end
     
     varList = who;
