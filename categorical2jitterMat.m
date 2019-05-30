@@ -18,7 +18,7 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
 %
 
     % varargin options listings
-    options = struct('positions',0 ,'missing_groups',0);
+    options = struct('positions',NaN ,'missing_groups',NaN);
 
     %# read the acceptable names
     optionNames = fieldnames(options);
@@ -49,6 +49,11 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
             warning('categRaw is a cell array of type non-numeric. Leaving it alone and attempting to proceed...')
         end
     end
+    
+    % expand a scalar category specification
+    if length(categRaw) == 1
+        categRaw = zeros(length(data),1);
+    end
 
     % make the raw categories into a list and find the groups.
     categList = categorical(categRaw);
@@ -66,7 +71,7 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
     end
     
     % handle the positions argument
-    if (options.positions == 0)
+    if isnan(options.positions)
         positions = 1:length(groupList);
     else
         positions = options.positions;
