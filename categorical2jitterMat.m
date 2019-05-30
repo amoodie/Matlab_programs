@@ -17,6 +17,29 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
 %   boxplot(dataMat)
 %
 
+    % varargin options listings
+    options = struct('positions',0 ,'missing_groups',0);
+
+    %# read the acceptable names
+    optionNames = fieldnames(options);
+
+    %# count arguments
+    nArgs = length(varargin);
+    if round(nArgs/2)~=nArgs/2
+       error('varargin must be given as propertyName/propertyValue pairs')
+    end
+
+    for pair = reshape(varargin, 2, []) %# pair is {propName;propValue}
+       inpName = lower(pair{1}); %# make case insensitive
+
+       if any(strcmp(inpName, optionNames))
+          % overwrite options given
+          options.(inpName) = pair{2};
+       else
+          error('%s is not a recognized parameter name', inpName)
+       end
+    end
+
 
     % check if the category vector is a cell array and attempt conversion.
     if iscell(categRaw)
@@ -34,12 +57,24 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
     % get the number of items in each group, for matrix dimensions
     nPerGroup = splitapply(@numel, data, findgroups(categRaw));
     
-    % if varargin, splice in the extra categories
-    if ~isempty(varargin)
-        groupList = [groupList; varargin{:}'];
+    % if varargin, splice in the extra categories if given
+    if iscell(options.missing_groups) % == 0)
+        groupList = [groupList; options.missing_groups'];
         [groupList, sortIdx] = sort(groupList);
         nPerGroup = [nPerGroup; zeros((size(groupList, 1) - size(nPerGroup,1)), 1)];
         nPerGroup = nPerGroup(sortIdx);
+    end
+    
+    % handle the positions argument
+    if (options.positions == 0)
+        positions = 1:length(groupList);
+    else
+        positions = options.positions;
+    end
+    
+    % validate that length of groups matches positions
+    if ~(length(groupList) == length(positions))
+        error('number of groups and positions does not match')
     end
     
     % initialize the matrix at the full size
@@ -49,9 +84,7 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
     for i = 1:length(groupList)
         dataMat(1:nPerGroup(i), i) = data(categRaw == str2num(cell2mat(groupList(i))));
     end
-    
-    % the jitter matrix, offset from the category axes
-%     jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + randn(size(dataMat))/(length(groupList)*10);
+   
     
     
     % if older than version x else
@@ -60,12 +93,12 @@ function [dataMat, jitterMat, groupMat] = categorical2jitterMat(data, categRaw, 
          % execute code for R2018a or earlier
          jitter = abs( randn(size(dataMat))/(length(groupList)*10) );
          offset = 2 / length(groupList);
-         jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + offset + jitter;
+         jitterMat = repmat(postitions, size(dataMat, 1), 1) + offset + jitter;
     else
         % execute code for R2018b or later
          jitter = ( randn(size(dataMat))/(length(groupList)*10) );
          offset = 0;
-         jitterMat = repmat(1:length(groupList), size(dataMat, 1), 1) + offset + jitter;
+         jitterMat = repmat(positions, size(dataMat, 1), 1) + offset + jitter;
     end
     
     
