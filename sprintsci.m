@@ -1,7 +1,8 @@
 function [str] = sprintsci(n, varargin)
 %sprintsci Print number in fully formatted scientific notation
 %   [str] = sprintsci(n) prints any number n as a LaTeX formatted string in scientific notation for 
-%   use in plotting a legend or plot text label. 
+%   use in plotting a legend or plot text label. Returns str as a string is
+%   n=1, otherwise str is a cell string of formatted strings.
 %
 %   [str] = sprintsci(n, r) optionally rounds numbers to r digits. Default
 %   is to round to 4 digits.
@@ -18,7 +19,15 @@ function [str] = sprintsci(n, varargin)
         r = 4;
     end
 
-    expo = floor( log10(n) ); % sci notation exponent
-    str = [num2str(n / 10^expo, r), '\times10^{', num2str(expo), '}'];  % format str
+    if numel(n) == 1
+        expo = floor( log10(n) ); % sci notation exponent
+        str = [num2str(n / 10^expo, r), '\times10^{', num2str(expo), '}'];  % format str
+    else
+        str = cell(size(n));
+        for i = 1:numel(str)
+            expo = floor( log10(n(i)) ); % sci notation exponent
+            str(i) = { [num2str(n(i) / 10^expo, r), '\times10^{', num2str(expo), '}'] };  % format str
+        end
+    end
 
 end
