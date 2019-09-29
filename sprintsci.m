@@ -10,23 +10,50 @@ function [str] = sprintsci(n, varargin)
 %   adapted from /u/dpb at MATLAB Newsgroup
 %   https://www.mathworks.com/matlabcentral/newsreader/view_thread/306693
 
+
+    % sanity checks
     if ~isempty(varargin)
-        if size(varargin) > 1
+        if size(varargin) > 3
             error('too many input arguments')
         end
-        r = varargin{1};
-    else
-        r = 4;
     end
+    
+    
+    % define and process inputs
+    defaultRound = 4;
+    defaultInterpreter = 'tex';
+    
+    p = inputParser;
+    addRequired(p, 'n');
+    addOptional(p, 'r', defaultRound);
+    addParameter(p, 'Interpreter', defaultInterpreter);
+    parse(p, n, varargin{:});
+    
+    
+    % copy out results
+    r = p.Results.r;
+    interpreter = p.Results.Interpreter;
+    
+    
+    % process interperter to string
+    if strcmp(interpreter, 'tex')
+        intstr = '';
+    elseif strcmp(interpreter, 'latex')
+        intstr = '$';
+    else % treat as "none", same as above
+        intstr = '';
+    end
+    
 
+    % process the input(s) to sci print string(s)
     if numel(n) == 1
         expo = floor( log10(n) ); % sci notation exponent
-        str = [num2str(n / 10^expo, r), '\times10^{', num2str(expo), '}'];  % format str
+        str = [intstr, num2str(n / 10^expo, r), '\times10^{', num2str(expo), '}', intstr];  % format str
     else
         str = cell(size(n));
         for i = 1:numel(str)
             expo = floor( log10(n(i)) ); % sci notation exponent
-            str(i) = { [num2str(n(i) / 10^expo, r), '\times10^{', num2str(expo), '}'] };  % format str
+            str(i) = { [intstr, num2str(n(i) / 10^expo, r), '\times10^{', num2str(expo), '}', intstr] };  % format str
         end
     end
 
