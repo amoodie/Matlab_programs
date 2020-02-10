@@ -16,6 +16,13 @@ function [c, varargout] = load_colorSet(colSwitch)
             col1 = [0.2 0.2 0.2];
             col2 = [0.5 0.5 0.5];
             col3 = [0.9 0.9 0.9];
+        case 'qual'
+            col1 = [27,  158, 119]./255;
+            col2 = [217, 95,  2]./255;
+            col3 = [117, 112, 179]./255;
+            col4 = [231, 41,  138]./255;
+            col5 = [102, 166, 30]./255;
+            col6 = [230, 171, 2]./255;
     end
     
     varList = who;
